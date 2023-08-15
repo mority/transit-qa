@@ -22,6 +22,11 @@
 
     $: conns2 = [
         new Connection(
+            '10:00',
+            '12:00',
+            3
+        ),
+        new Connection(
             '11:00',
             '13:00',
             3
@@ -74,16 +79,19 @@
         const depB = b.getDeparture();
         const arrA = a.getArrival();
         const arrB = b.getArrival();
-        //console.log("param: ", {ca}, {cb}, {depA}, {depB}, {arrA}, {arrB});
+        console.log("param: ", {ca}, {cb}, {depA}, {depB}, {arrA}, {arrB});
 
         const omega = a.overtakes(b) ? 0 : Number.MAX_VALUE;
         const distance = Math.min(Math.abs(depA - depB), Math.abs(arrA - arrB), omega);
-        //console.log({omega}, {distance});
+        console.log({omega}, {distance});
 
         return alpha * (ca / cb) * distance;
     }
 
-    function rateInterval(A: Connection[], B: Connection[], weights: number[]) {
+    function getMaxImprovment(A: Connection[], B: Connection[], weights: number[]) {
+        let maxImprovement = -1;
+        let maxA = null, maxB = null;
+
         A.forEach(cA => {
             B.forEach(cB => {
                 const criteriaA = cA.getCriteria2();
@@ -97,6 +105,7 @@
                     const weightedB = criteriaB[i] * weights[i];
                     const correction = getRelTimeCorrection(cA, cB, weightedA, weightedB);
                     const criterionDist = weightedA + correction - weightedB;
+
                     dist += Math.pow(criterionDist, 2);
                     if (criterionDist < 0) {
                         improvement += Math.pow(criterionDist, 2);
@@ -105,10 +114,55 @@
                     console.log({i}, {weightedA}, {weightedB}, {correction}, {criterionDist});
                 }
 
-                console.log(cA, cB, {dist}, {improvement});
+                dist = Math.sqrt(dist);
+                improvement = Math.sqrt(improvement);
+
+                if (improvement >= maxImprovement) {
+                    maxImprovement = improvement;
+                    maxA = cA;
+                    maxB = cB;
+                }
+
+                // console.log({cA}, '\n', {cB}, '\n\t', {dist}, {improvement}, '\n\n\n');
             });
         });
-        return 0;
+
+        console.assert(maxA != null, "maxA == null");
+        console.assert(maxB != null, "maxA == null");
+
+        return {maxImprovement, maxA, maxB};
+    }
+
+    function getSetImprovement(A: Connection[], B: Connection[], weights: number[]) {
+        if (A.length == 0 && B.length == 0) {
+            return 0;
+        } else if (A.length == 0) {
+            return Number.MIN_VALUE;
+        } else if (B.length == 0) {
+            return Number.MAX_VALUE;
+        }
+
+        let improvement = 0;
+
+        let aCopy = [... A];
+        let bCopy = [... B];
+
+        console.log({aCopy, bCopy});
+
+        let i = 0;
+        while (aCopy.length !== 0) {
+            let {maxImprovement, maxA, maxB} = getMaxImprovment(aCopy, bCopy, weights);
+            console.log({maxImprovement, maxA, maxB})
+            bCopy.push(maxA);
+            aCopy.splice(aCopy.indexOf(maxA), 1);
+            console.log({aCopy, bCopy});
+            improvement += maxImprovement;
+            if (maxImprovement <= 0.1 || ++i > 10) {
+                break;
+            }
+        }
+
+        return improvement;
     }
 
     function onChangeConnections() {
@@ -125,5 +179,7 @@
 <div class="text-center" style="font-family: monospace;">
     sum1: {rate(conns1)}<br>
     sum2: {rate(conns2)}<br>
-    interval sum1: {rateInterval(conns1, conns2, [1, 30])}
+    max improvement: {getMaxImprovment(conns1, conns2, [1, 30]).maxImprovement}<br>
+    set improvement LR: {getSetImprovement(conns1, conns2, [1, 30])}<br>
+    set improvement RL: {getSetImprovement(conns2, conns1, [1, 30])}
 </div>
