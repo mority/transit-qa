@@ -7,50 +7,123 @@
     import Connections from "./Connections.svelte";
     import {Connection} from "../types/Connection";
 
-    let conns1 = [
+    $: conns1 = [
         new Connection(
-            '10:30',
-            '12:10',
+            '10:00',
+            '12:00',
             3
         ),
         new Connection(
-            '10:30',
-            '12:00',
-            4
+            '11:00',
+            '13:00',
+            3
         )
     ];
 
-    let conns2 = [
+    $: conns2 = [
         new Connection(
-            '10:30',
-            '12:10',
+            '11:00',
+            '13:00',
             3
         ),
         new Connection(
-            '10:30',
             '12:00',
-            4
+            '14:00',
+            3
         )
     ];
 
-    function getImprovement(a: number, b: number) {
-        return a < b ? b - a : 0;
+    // Preference vectors:
+    // [travel time weight, transfer weight]
+    const C = [
+        [1.0, 30.0],
+        [1.0, 1.0],
+        [0.0, 1.0]
+    ];
+
+    function f2(c: number[], x: number[]) {
+        return x[0] * c[0] + x[1] * c[1];
     }
 
-    function getConnImprovement(a: Connection, b: Connection) {
-        
+    function best(c: number[], conns: Connection[]): Connection {
+        let best = null;
+        let bestVal = Number.MAX_VALUE;
+        conns.forEach(conn => {
+            const val = f2(c, conn.getCriteria2());
+            if (val < bestVal) {
+                bestVal = val;
+                best = conn;
+            }
+        });
+        return best;
     }
 
-    function getSetImprovement(s1: [Connection], s2: [Connection]) {
+    function rate(conns: Connection[]) {
+        let sum = 0.0;
+        for (let c in C) {
+            const b = best(C[c], conns);
+            sum += f2(C[c], b.getCriteria2());
+        }
+        return sum;
+    }
+
+    function getRelTimeCorrection(a: Connection, b: Connection, ca: number, cb: number) {
+        const alpha = 0.5;
+
+        const depA = a.getDeparture();
+        const depB = b.getDeparture();
+        const arrA = a.getArrival();
+        const arrB = b.getArrival();
+        //console.log("param: ", {ca}, {cb}, {depA}, {depB}, {arrA}, {arrB});
+
+        const omega = a.overtakes(b) ? 0 : Number.MAX_VALUE;
+        const distance = Math.min(Math.abs(depA - depB), Math.abs(arrA - arrB), omega);
+        //console.log({omega}, {distance});
+
+        return alpha * (ca / cb) * distance;
+    }
+
+    function rateInterval(A: Connection[], B: Connection[], weights: number[]) {
+        A.forEach(cA => {
+            B.forEach(cB => {
+                const criteriaA = cA.getCriteria2();
+                const criteriaB = cB.getCriteria2();
+
+                let dist = 0.0;
+                let improvement = 0.0;
+
+                for (let i = 0; i != weights.length; ++i) {
+                    const weightedA = criteriaA[i] * weights[i];
+                    const weightedB = criteriaB[i] * weights[i];
+                    const correction = getRelTimeCorrection(cA, cB, weightedA, weightedB);
+                    const criterionDist = weightedA + correction - weightedB;
+                    dist += Math.pow(criterionDist, 2);
+                    if (criterionDist < 0) {
+                        improvement += Math.pow(criterionDist, 2);
+                    }
+
+                    console.log({i}, {weightedA}, {weightedB}, {correction}, {criterionDist});
+                }
+
+                console.log(cA, cB, {dist}, {improvement});
+            });
+        });
         return 0;
+    }
+
+    function onChangeConnections() {
+        conns1 = conns1;
+        conns2 = conns2;
     }
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-    <Connections connections={conns1}/>
-    <Connections connections={conns2}/>
+    <Connections onChangeConnections={onChangeConnections} connections={conns1}/>
+    <Connections onChangeConnections={onChangeConnections} connections={conns2}/>
 </div>
 
-<div class="text-center">
-    Improvement: {getSetImprovement(conns1, conns2)}
+<div class="text-center" style="font-family: monospace;">
+    sum1: {rate(conns1)}<br>
+    sum2: {rate(conns2)}<br>
+    interval sum1: {rateInterval(conns1, conns2, [1, 30])}
 </div>
