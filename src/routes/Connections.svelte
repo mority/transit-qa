@@ -20,7 +20,7 @@
             alert("transfers need to be a number");
             return;
         }
-        connections = [...connections, new Connection(newCon[0], newCon[1], newCon[2])];
+        connections.push(new Connection(newCon[0], newCon[1], parseInt(newCon[2])));
         onChangeConnections();
     }
 
