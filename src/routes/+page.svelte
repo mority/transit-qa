@@ -7,7 +7,6 @@
     import Connections from "./Connections.svelte";
     import {Connection} from "../types/Connection";
 
-    $: rating = 0.0;
 
     $: conns1 = [
         new Connection(
@@ -110,16 +109,16 @@
     function getRating() {
         const LR = getSetImprovement(conns1, conns2, [1, 1, 30]);
         const RL = getSetImprovement(conns2, conns1, [1, 1, 30]);
-        rating = LR - RL;
+        return LR - RL;
     }
 
     function onChangeConnections() {
         conns1 = conns1;
         conns2 = conns2;
-        getRating();
+        rating = getRating();
     }
 
-    setTimeout(onChangeConnections, 10);
+    $: rating = getRating();
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
