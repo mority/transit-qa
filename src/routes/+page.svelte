@@ -7,69 +7,26 @@
     import Connections from "./Connections.svelte";
     import {Connection} from "../types/Connection";
 
+    $: rating = 0.0;
+
     $: conns1 = [
         new Connection(
-            '09:00',
-            '11:00',
-            3
-        ),
-        new Connection(
-            '10:00',
-            '12:00',
-            3
-        ),
-        new Connection(
-            '11:00',
-            '13:00',
-            3
+            '09:33',
+            '11:34',
+            0
         )
     ];
 
     $: conns2 = [
-        // new Connection(
-        //     '10:00',
-        //     '12:00',
-        //     3
-        // ),
-        // new Connection(
-        //     '11:00',
-        //     '13:00',
-        //     3
-        // ),
-        // new Connection(
-        //     '12:00',
-        //     '14:00',
-        //     3
-        // ),
-        // new Connection(
-        //     '12:00',
-        //     '14:00',
-        //     3
-        // ),
         new Connection(
-            '09:00',
-            '11:00',
-            3
+            '09:33',
+            '11:34',
+            0
         ),
         new Connection(
-            '10:00',
-            '12:00',
-            3
-        ),
-        new Connection(
-            '11:00',
-            '13:00',
-            6
-        ),
-        // new Connection(
-        //     '13:00',
-        //     '15:00',
-        //     3
-        // ),
-        new Connection(
-            '12:00',
-            '14:00',
-            3
+            '09:45',
+            '12:16',
+            2
         )
     ];
 
@@ -138,31 +95,34 @@
                 }
             });
 
+            console.log({aCopy, bCopy, minA, minB, minImprovementA})
+
             improvement += minImprovementA;
             aCopy.splice(aCopy.indexOf(minA), 1);
             bCopy.push(minA);
         }
 
+        console.log("\n\n\n")
+
         return improvement;
+    }
+
+    function getRating() {
+        const LR = getSetImprovement(conns1, conns2, [1, 1, 30]);
+        const RL = getSetImprovement(conns2, conns1, [1, 1, 30]);
+        rating = LR - RL;
     }
 
     function onChangeConnections() {
         conns1 = conns1;
         conns2 = conns2;
+        getRating();
     }
+
+    setTimeout(onChangeConnections, 10);
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-    <Connections onChangeConnections={onChangeConnections} connections={conns1}/>
-    <Connections onChangeConnections={onChangeConnections} connections={conns2}/>
-</div>
-
-<div class="text-center" style="font-family: monospace;">
-    set improvement LR: {getSetImprovement(conns1, conns2, [1, 1, 30]).toFixed(1)}<br>
-    set improvement RL: {getSetImprovement(conns2, conns1, [1, 1, 30]).toFixed(1)}<br>
-    set improvement diff
-    LR: {(getSetImprovement(conns1, conns2, [1, 1, 30]) - getSetImprovement(conns2, conns1, [1, 1, 30])).toFixed(1)}<br>
-    set improvement diff
-    RL: {(getSetImprovement(conns2, conns1, [1, 1, 30]) - getSetImprovement(conns1, conns2, [1, 1, 30])).toFixed(1)}
-    <br>
+    <Connections onChangeConnections={onChangeConnections} connections={conns1} rating={rating}/>
+    <Connections onChangeConnections={onChangeConnections} connections={conns2} rating={-rating}/>
 </div>

@@ -3,6 +3,7 @@
 
     export let connections;
     export let onChangeConnections;
+    export let rating;
 
     let columns = ["Departure", "Arrival", "Transfers"]
     let newCon = [...columns];
@@ -42,8 +43,14 @@
                     <div class="font-semibold text-right">{ col }</div>
                 </th>
             {/each}
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                <div class="font-semibold text-right"></div>
+            <th>
+                <div class="font-semibold text-center font-mono">
+
+                    Rating=<span class:text-green-600={rating > 0}
+                                 class:text-red-600={rating < 0}>
+                        { rating.toFixed(0) }
+                    </span>
+                </div>
             </th>
         </tr>
         </thead>
