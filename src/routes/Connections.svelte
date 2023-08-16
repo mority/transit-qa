@@ -48,7 +48,7 @@
 
                     Rating=<span class:text-green-600={rating > 0}
                                  class:text-red-600={rating < 0}>
-                        { rating.toFixed(0) }
+                        { rating.toFixed(1) }
                     </span>
                 </div>
             </th>

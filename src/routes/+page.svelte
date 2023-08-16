@@ -10,8 +10,13 @@
 
     $: conns1 = [
         new Connection(
-            '09:33',
-            '11:34',
+            '10:00',
+            '12:00',
+            0
+        ),
+        new Connection(
+            '10:00',
+            '12:00',
             0
         )
     ];
@@ -25,7 +30,7 @@
         new Connection(
             '09:45',
             '12:16',
-            2
+            1
         )
     ];
 
@@ -50,7 +55,14 @@
         dist = Math.sqrt(dist);
         improvement = Math.sqrt(improvement);
 
-        return {dist, improvement};
+        if (improvement == 0) {
+            return 0;
+        }
+
+        const p = 30.0;
+        const q = 0.1;
+
+        return Math.log2(Math.pow(improvement, 2) / dist) * (Math.atan(p * (dist - q)) + Math.PI / 2.0);
     }
 
     function getMinImprovement(conn: Connection, X: Connection[], weights: number[]) {
@@ -58,7 +70,7 @@
         let min = null;
 
         X.forEach(x => {
-            let {dist, improvement} = getImprovement(conn, x, weights);
+            let improvement = getImprovement(conn, x, weights);
             if (improvement < minImprovement) {
                 minImprovement = improvement;
                 min = x;
@@ -81,24 +93,27 @@
         let bCopy = [...B];
         let improvement = 0.0;
 
+        console.log({aCopy, bCopy})
+
         while (aCopy.length !== 0) {
-            let minImprovementA = Number.MAX_VALUE;
-            let minA = null, minB = null;
+            let maxImprovementA = -Number.MAX_VALUE;
+            let maxA = null, minB = null;
 
             aCopy.forEach(a => {
                 let {minImprovement, min} = getMinImprovement(a, bCopy, weights);
-                if (minImprovement < minImprovementA) {
-                    minImprovementA = minImprovement;
-                    minA = a;
+                if (minImprovement > maxImprovementA) {
+                    maxImprovementA = minImprovement;
+                    maxA = a;
                     minB = min;
                 }
             });
 
-            console.log({aCopy, bCopy, minA, minB, minImprovementA})
 
-            improvement += minImprovementA;
-            aCopy.splice(aCopy.indexOf(minA), 1);
-            bCopy.push(minA);
+            improvement += maxImprovementA;
+            aCopy.splice(aCopy.indexOf(maxA), 1);
+            bCopy.push(maxA);
+
+            console.log({improvement, aCopy, bCopy, maxA, minB, maxImprovementA})
         }
 
         console.log("\n\n\n")
