@@ -1,27 +1,43 @@
 <script lang="ts">
+    import {Mode} from "../types/Connection";
     import {Connection} from "../types/Connection";
 
     export let connections;
     export let onChangeConnections;
-    export let rating;
 
-    let columns = ["Departure", "Arrival", "Transfers"]
+    let columns = ["Type","Length","Departure", "Arrival", "Transfers", "Type","Length"]
     let newCon = [...columns];
 
     function addCon() {
-        if (Connection.formatTime(newCon[0]) === -1) {
-            alert("invalid departure time format, required HH:MM");
+        if (!Connection.isValidModeStr(newCon[0])) {
+            alert("invalid start mode, use: walk | taxi");
             return;
         }
-        if (Connection.formatTime(newCon[1]) === -1) {
-            alert("invalid arrival time format, required HH:MM");
+        if (!/^\d+$/.test(newCon[1])) {
+            alert("start length needs to be a number");
             return;
         }
-        if (!/^\d+$/.test(newCon[2])) {
-            alert("transfers need to be a number");
+        if (Connection.parseTime(newCon[2]) === -1) {
+            alert("invalid time format, required HH:MM");
             return;
         }
-        connections.push(new Connection(newCon[0], newCon[1], parseInt(newCon[2])));
+        if (Connection.parseTime(newCon[3]) === -1) {
+            alert("invalid time format, required HH:MM");
+            return;
+        }
+        if (!/^\d+$/.test(newCon[4])) {
+            alert("transfers needs to be a number");
+            return;
+        }
+        if (!Connection.isValidModeStr(newCon[5])) {
+            alert("invalid end mode, use: walk | taxi");
+            return;
+        }
+        if (!/^\d+$/.test(newCon[6])) {
+            alert("end length needs to be a number");
+            return;
+        }
+        connections.push(new Connection(newCon[0].trim().toLocaleLowerCase(), parseInt(newCon[1]), newCon[2], newCon[3], parseInt(newCon[4]), newCon[5].trim().toLocaleLowerCase(), parseInt(newCon[6])));
         onChangeConnections();
     }
 
@@ -38,26 +54,37 @@
         <!-- Table header -->
         <thead class="text-xs font-semibold uppercase text-slate-500 bg-slate-50 border-t border-b border-slate-200">
         <tr>
+            <th colspan="2">
+                <div class="font-semibold text-center">Start Leg</div>
+            </th>
+            <th colspan="3">
+                <div class="font-semibold text-center">Public Transit</div>
+            </th>
+            <th colspan="2">
+                <div class="font-semibold text-center">End Leg</div>
+            </th>
+        </tr>
+        <tr>
             {#each columns as col}
                 <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                    <div class="font-semibold text-right">{ col }</div>
+                    <div class="font-semibold text-center">{ col }</div>
                 </th>
             {/each}
-            <th>
-                <div class="font-semibold text-center font-mono">
-
-                    Rating=<span class:text-green-600={rating > 0}
-                                 class:text-red-600={rating < 0}>
-                        { rating.toFixed(1) }
-                    </span>
-                </div>
-            </th>
         </tr>
         </thead>
 
         <tbody class="text-sm divide-y divide-slate-200">
         {#each connections as c, index}
             <tr>
+                <td contenteditable="true" bind:innerHTML={c.start_mode}
+                    class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
+                    on:keyup={onChangeConnections}>
+                    { c.start_mode }
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <input type="number" bind:value={c.start_length} class="border-0 w-16"
+                           on:change={onChangeConnections}>
+                </td>
                 <td contenteditable="true" bind:innerHTML={c.departure}
                     class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
                     class:underline={ Connection.parseTime(c.departure) === -1 }
@@ -72,6 +99,15 @@
                 </td>
                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                     <input type="number" bind:value={c.transfers} class="border-0 w-16"
+                           on:change={onChangeConnections}>
+                </td>
+                <td contenteditable="true" bind:innerHTML={c.end_mode}
+                    class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
+                    on:keyup={onChangeConnections}>
+                    { c.end_mode }
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <input type="number" bind:value={c.end_length} class="border-0 w-16"
                            on:change={onChangeConnections}>
                 </td>
                 <td class="px-5 first:pl-5 last:pr-5 py-3 whitespace-nowrap">

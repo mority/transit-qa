@@ -1,3 +1,8 @@
+export enum Mode {
+    Walk,
+    Taxi
+}
+
 export class Connection {
     getDeparture() {
         return Connection.parseTime(this.departure);
@@ -32,10 +37,37 @@ export class Connection {
         return -1
     }
 
+    static formatMode(m: Mode) {
+        switch(m) {
+            case Mode.Walk:
+                return "walk";
+            case Mode.Taxi:
+                return "taxi";
+        }
+    }
+
+    static isValidModeStr(raw: string) {
+        var s = raw.trim().toLocaleLowerCase();    
+        return s == "walk" || s == "taxi";      
+    }
+
+    static parseMode(raw: string) {
+        var s = raw.trim().toLocaleLowerCase();
+        if(s == "walk") {
+            return Mode.Walk;
+        } else {
+            return Mode.Taxi;
+        }
+    }
+
     constructor(
+        public start_mode: string,
+        public start_length:number,
         private departure: string,
         private arrival: string,
-        public transfers: number
+        public transfers: number,
+        public end_mode: string,
+        public end_length: number
     ) {
     }
 }

@@ -6,31 +6,27 @@
 <script lang="ts">
     import Connections from "./Connections.svelte";
     import {Connection} from "../types/Connection";
+	import Parameters from "./Parameters.svelte";
 
 
-    $: conns1 = [
+    $: conns = [
         new Connection(
-            '10:00',
+            'walk',
+            13,
+            '10:34',
             '12:00',
-            0
+            0,
+            'walk',
+            7
         ),
         new Connection(
-            '10:00',
+            'taxi',
+            3,
+            '10:34',
             '12:00',
-            0
-        )
-    ];
-
-    $: conns2 = [
-        new Connection(
-            '09:33',
-            '11:34',
-            0
-        ),
-        new Connection(
-            '09:45',
-            '12:16',
-            1
+            0,
+            'walk',
+            7
         )
     ];
 
@@ -137,6 +133,6 @@
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-    <Connections onChangeConnections={onChangeConnections} connections={conns1} rating={rating}/>
-    <Connections onChangeConnections={onChangeConnections} connections={conns2} rating={-rating}/>
+    <Parameters onChangeConnections={onChangeConnections} />
+    <Connections onChangeConnections={onChangeConnections} connections={conns}/>
 </div>
