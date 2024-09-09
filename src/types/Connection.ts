@@ -12,16 +12,28 @@ export class Connection {
         return Connection.parseTime(this.arrival);
     }
 
+    getStartMode() {
+        return Connection.parseMode(this.start_mode);
+    }
+
+    getEndMode() {
+        return Connection.parseMode(this.end_mode);
+    }
+
     overtakes(o: Connection) {
         return this.getDeparture() > o.getDeparture() && this.getArrival() < o.getArrival();
     }
 
-    getCriteria3() {
-        return [-this.getDeparture(), this.getArrival(), this.transfers];
+    getTau(cost_taxi: number, cost_transfer: number) {
+        return (this.getStartMode() == Mode.Walk ? this.start_length : cost_taxi * this.start_length) + (this.getArrival() - this.getDeparture()) + cost_transfer * this.transfers + (this.getEndMode() == Mode.Walk ? this.end_length : cost_taxi * this.end_length);
     }
 
-    getCriteria2() {
-        return [this.getArrival() - this.getDeparture(), this.transfers];
+    setDominated(b: boolean) {
+        this.dominated = b ? 'grey' : 'none';
+    }
+
+    isDominated() {
+        return this.dominated == 'grey';
     }
 
     static formatTime(i: number) {
@@ -37,23 +49,14 @@ export class Connection {
         return -1
     }
 
-    static formatMode(m: Mode) {
-        switch(m) {
-            case Mode.Walk:
-                return "walk";
-            case Mode.Taxi:
-                return "taxi";
-        }
-    }
-
     static isValidModeStr(raw: string) {
-        var s = raw.trim().toLocaleLowerCase();    
-        return s == "walk" || s == "taxi";      
+        var s = raw.trim().toLocaleLowerCase();
+        return s == "walk" || s == "taxi";
     }
 
     static parseMode(raw: string) {
         var s = raw.trim().toLocaleLowerCase();
-        if(s == "walk") {
+        if (s == "walk") {
             return Mode.Walk;
         } else {
             return Mode.Taxi;
@@ -61,13 +64,15 @@ export class Connection {
     }
 
     constructor(
-        public start_mode: string,
-        public start_length:number,
+        private start_mode: string,
+        public start_length: number,
         private departure: string,
         private arrival: string,
         public transfers: number,
-        public end_mode: string,
+        private end_mode: string,
         public end_length: number
     ) {
     }
+
+    dominated:string = 'none';
 }

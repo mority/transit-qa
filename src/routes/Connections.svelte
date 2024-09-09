@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {Mode} from "../types/Connection";
     import {Connection} from "../types/Connection";
 
     export let connections;
@@ -75,7 +74,7 @@
 
         <tbody class="text-sm divide-y divide-slate-200">
         {#each connections as c, index}
-            <tr>
+            <tr style="background-color:{c.dominated};">
                 <td contenteditable="true" bind:innerHTML={c.start_mode}
                     class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
                     on:keyup={onChangeConnections}>
