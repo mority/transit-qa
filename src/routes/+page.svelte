@@ -8,30 +8,91 @@
     import Connections from "./Connections.svelte";
     import {Connection} from "../types/Connection";
 
-    let alpha = 2.0;
-    let cost_taxi = 2.0;
-    let cost_transfer = 10.0;
+    let alpha = 3.0;
+    let factor_taxi = 10.0;
+    let base_taxi = 35.0;
+    let factor_transfer = 5.0;
 
     let conns = [
         new Connection(
-            "1",
+            "ÖV Takt 1",
+            '10:34',
+            '12:00',
+            2,
             'walk',
             13,
-            '10:34',
-            '12:00',
-            0,
             'walk',
-            7
+            0
         ),
         new Connection(
-            "2",
+            "Takt Taxi",
+            '11:00',
+            '11:40',
+            1,
             'taxi',
             3,
-            '10:34',
-            '12:00',
-            0,
             'walk',
-            7
+            0
+        ),
+        new Connection(
+            "Weit zu Fuß",
+            '11:34',
+            '12:14',
+            1,
+            'walk',
+            70,
+            'walk',
+            0
+        ),
+        new Connection(
+            "Taxi Kurz",
+            '11:34',
+            '12:14',
+            1,
+            'taxi',
+            3,
+            'walk',
+            0
+        ),
+        new Connection(
+            "Ersatz für Takt",
+            '12:34',
+            '13:10',
+            1,
+            'taxi',
+            15,
+            'walk',
+            0
+        ),
+        new Connection(
+            "ÖV Takt 2",
+            '14:34',
+            '16:00',
+            2,
+            'walk',
+            13,
+            'walk',
+            0
+        ),
+        new Connection(
+            "ÖV Takt 3",
+            '16:34',
+            '18:00',
+            2,
+            'walk',
+            13,
+            'walk',
+            0
+        ),
+        new Connection(
+            "Spät Schnell",
+            '17:40',
+            '18:05',
+            1,
+            'walk',
+            5,
+            'walk',
+            5
         )
     ];
 
@@ -43,25 +104,33 @@
     }
     
     function dominates(a: Connection, b: Connection) {
-        let tau_a = a.getTau(cost_taxi, cost_transfer);
-        let tau_b = b.getTau(cost_taxi, cost_transfer);
-        let alpha_term = alpha * (tau_a / tau_b) * distance(a,b);
-        let res = tau_a + alpha_term < tau_b;
+        let tau_a = a.getTau(factor_taxi, factor_transfer);
+        let tau_b = b.getTau(factor_taxi, factor_transfer);
+        let alpha_term = alpha * (a.getTravelTime() / b.getTravelTime()) * distance(a,b);
+        let sum = tau_a + alpha_term
+        let res = sum < tau_b;
 
-        console.log("%s dominates %s? %d + %d < %d => %o", a.name, b.name, tau_a, alpha_term, tau_b, res);
+        console.log("%s dominates %s? distance: %d, %d + %d = %d < %d => %o", a.name, b.name, distance(a,b),tau_a, alpha_term,sum, tau_b, res);
 
-        return res;
+        return tau_b - sum;
     }
 
     function onChangeConnections() {
         for(let c of conns) {
-            c.dominated = false;
+            c.dominated = [];
         }
 
-        for(let i in conns) {
-            for(let j in conns){
-                if(i != j && dominates(conns[i],conns[j])) {
-                    conns[j].dominated = true;
+        for(let i = 0; i < conns.length; ++i) {
+            for(let j = 0; j < conns.length; ++j){
+                let res = dominates(conns[i],conns[j]);
+                if(i != j) {
+                    if(0 < res) {
+                    conns[j].dominated.push([conns[i].name,res]);
+                    }
+                    if(conns[j].closest_to_dominate_res < res) {
+                        conns[j].closest_to_dominate_index = i;
+                        conns[j].closest_to_dominate_res = res;
+                    }
                 }
             }
         }
@@ -73,6 +142,6 @@
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-    <Parameters onChangeConnections={onChangeConnections} bind:alpha={alpha} bind:cost_taxi={cost_taxi} bind:cost_transfer={cost_transfer} />
+    <Parameters onChangeConnections={onChangeConnections} bind:alpha={alpha} bind:base_taxi={base_taxi} bind:factor_taxi={factor_taxi} bind:factor_transfer={factor_transfer} />
     <Connections onChangeConnections={onChangeConnections} bind:connections={conns}/>    
 </div>

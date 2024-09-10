@@ -4,6 +4,8 @@ export enum Mode {
 }
 
 export class Connection {
+    static taxi_base_cost = 35;
+
     getDeparture() {
         return Connection.parseTime(this.departure);
     }
@@ -25,7 +27,11 @@ export class Connection {
     }
 
     getTau(cost_taxi: number, cost_transfer: number) {
-        return (this.getStartMode() == Mode.Walk ? this.start_length : cost_taxi * this.start_length) + (this.getArrival() - this.getDeparture()) + cost_transfer * this.transfers + (this.getEndMode() == Mode.Walk ? this.end_length : cost_taxi * this.end_length);
+        return (this.getStartMode() == Mode.Walk ? this.start_length : Connection.taxi_base_cost + cost_taxi * this.start_length) + (this.getArrival() - this.getDeparture()) + cost_transfer * this.transfers + (this.getEndMode() == Mode.Walk ? this.end_length : Connection.taxi_base_cost + cost_taxi * this.end_length);
+    }
+
+    getTravelTime() {
+        return this.getArrival() - this.getDeparture();
     }
 
     static formatTime(i: number) {
@@ -57,15 +63,17 @@ export class Connection {
 
     constructor(
         public name: string,
-        private start_mode: string,
-        public start_length: number,
         private departure: string,
         private arrival: string,
         public transfers: number,
+        private start_mode: string,
+        public start_length: number,
         private end_mode: string,
         public end_length: number
     ) {
     }
 
-    dominated = false;
+    dominated = Array<[string,number]>();
+    closest_to_dominate_index = -1;
+    closest_to_dominate_res = Number.NEGATIVE_INFINITY;
 }
