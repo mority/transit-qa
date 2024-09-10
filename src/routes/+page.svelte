@@ -48,7 +48,7 @@
         let alpha_term = alpha * (tau_a / tau_b) * distance(a,b);
         let res = tau_a + alpha_term < tau_b;
 
-        console.log("$%s dominates %s? %d + %d < %d => %o", a.name, b.name, tau_a, alpha_term, tau_b, res);
+        console.log("%s dominates %s? %d + %d < %d => %o", a.name, b.name, tau_a, alpha_term, tau_b, res);
 
         return res;
     }
@@ -65,6 +65,8 @@
                 }
             }
         }
+
+        conns = conns;
     }
 
     onChangeConnections();

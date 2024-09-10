@@ -8,19 +8,26 @@
     let newCon = [...columns];
 
     function addCon() {
+        for(let field of newCon) {
+            field = field.trim();
+        }
+
         if (!Connection.isValidModeStr(newCon[1])) {
             alert("invalid start mode, use: walk | taxi");
             return;
         }
         if (!/^\d+$/.test(newCon[2])) {
+            console.log("start length needs to be a number, provided: ", newCon[2]);
             alert("start length needs to be a number");
             return;
         }
         if (Connection.parseTime(newCon[3]) === -1) {
+            console.log("departure: invalid time format, required HH:MM, provided: ", newCon[3]);
             alert("departure: invalid time format, required HH:MM");
             return;
         }
         if (Connection.parseTime(newCon[4]) === -1) {
+            console.log("arrival: invalid time format, required HH:MM, provided: ", newCon[4]);
             alert("arrival: invalid time format, required HH:MM");
             return;
         }
