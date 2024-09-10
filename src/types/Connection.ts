@@ -28,14 +28,6 @@ export class Connection {
         return (this.getStartMode() == Mode.Walk ? this.start_length : cost_taxi * this.start_length) + (this.getArrival() - this.getDeparture()) + cost_transfer * this.transfers + (this.getEndMode() == Mode.Walk ? this.end_length : cost_taxi * this.end_length);
     }
 
-    setDominated(b: boolean) {
-        this.dominated = b ? 'grey' : 'none';
-    }
-
-    isDominated() {
-        return this.dominated == 'grey';
-    }
-
     static formatTime(i: number) {
         return `${Math.floor(i / 60)}:${('0' + (i % 60)).slice(-2)}`;
     }
@@ -64,6 +56,7 @@ export class Connection {
     }
 
     constructor(
+        public name: string,
         private start_mode: string,
         public start_length: number,
         private departure: string,
@@ -74,5 +67,5 @@ export class Connection {
     ) {
     }
 
-    dominated:string = 'none';
+    dominated = false;
 }

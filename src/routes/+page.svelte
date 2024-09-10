@@ -4,9 +4,9 @@
 </svelte:head>
 
 <script lang="ts">
+    import Parameters from "./Parameters.svelte";
     import Connections from "./Connections.svelte";
-    import {Connection, Mode} from "../types/Connection";
-	import Parameters from "./Parameters.svelte";
+    import {Connection} from "../types/Connection";
 
     let alpha = 2.0;
     let cost_taxi = 2.0;
@@ -14,6 +14,7 @@
 
     let conns = [
         new Connection(
+            "1",
             'walk',
             13,
             '10:34',
@@ -23,6 +24,7 @@
             7
         ),
         new Connection(
+            "2",
             'taxi',
             3,
             '10:34',
@@ -41,33 +43,34 @@
     }
     
     function dominates(a: Connection, b: Connection) {
-        var tau_a = a.getTau(cost_taxi, cost_transfer);
-        var tau_b = b.getTau(cost_taxi, cost_transfer);
+        let tau_a = a.getTau(cost_taxi, cost_transfer);
+        let tau_b = b.getTau(cost_taxi, cost_transfer);
+        let alpha_term = alpha * (tau_a / tau_b) * distance(a,b);
+        let res = tau_a + alpha_term < tau_b;
 
-        return tau_a + alpha * (tau_a / tau_b) * distance(a,b) < tau_b;
+        console.log("$%s dominates %s? %d + %d < %d => %o", a.name, b.name, tau_a, alpha_term, tau_b, res);
+
+        return res;
     }
 
     function onChangeConnections() {
         for(let c of conns) {
-            c.setDominated(false);
+            c.dominated = false;
         }
 
         for(let i in conns) {
             for(let j in conns){
-                if(i != j && !conns[i].isDominated() && dominates(conns[i],conns[j])) {
-                 conns[j].setDominated(true);  
+                if(i != j && dominates(conns[i],conns[j])) {
+                    conns[j].dominated = true;
                 }
             }
         }
-
-        alpha = alpha;
-        cost_taxi = cost_taxi;
-        cost_transfer = cost_transfer;
-        conns = conns;
     }
+
+    onChangeConnections();
 </script>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-    <Parameters onChangeConnections={onChangeConnections} alpha={alpha} cost_taxi={cost_taxi} cost_transfer={cost_transfer}/>
-    <Connections onChangeConnections={onChangeConnections} connections={conns}/>
+    <Parameters onChangeConnections={onChangeConnections} bind:alpha={alpha} bind:cost_taxi={cost_taxi} bind:cost_transfer={cost_transfer} />
+    <Connections onChangeConnections={onChangeConnections} bind:connections={conns}/>    
 </div>

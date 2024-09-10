@@ -4,39 +4,39 @@
     export let connections;
     export let onChangeConnections;
 
-    let columns = ["Type","Length","Departure", "Arrival", "Transfers", "Type","Length"]
+    let columns = ["Name","Type","Length","Departure", "Arrival", "Transfers", "Type","Length"]
     let newCon = [...columns];
 
     function addCon() {
-        if (!Connection.isValidModeStr(newCon[0])) {
+        if (!Connection.isValidModeStr(newCon[1])) {
             alert("invalid start mode, use: walk | taxi");
             return;
         }
-        if (!/^\d+$/.test(newCon[1])) {
+        if (!/^\d+$/.test(newCon[2])) {
             alert("start length needs to be a number");
             return;
         }
-        if (Connection.parseTime(newCon[2]) === -1) {
-            alert("invalid time format, required HH:MM");
-            return;
-        }
         if (Connection.parseTime(newCon[3]) === -1) {
-            alert("invalid time format, required HH:MM");
+            alert("departure: invalid time format, required HH:MM");
             return;
         }
-        if (!/^\d+$/.test(newCon[4])) {
+        if (Connection.parseTime(newCon[4]) === -1) {
+            alert("arrival: invalid time format, required HH:MM");
+            return;
+        }
+        if (!/^\d+$/.test(newCon[5])) {
             alert("transfers needs to be a number");
             return;
         }
-        if (!Connection.isValidModeStr(newCon[5])) {
+        if (!Connection.isValidModeStr(newCon[6])) {
             alert("invalid end mode, use: walk | taxi");
             return;
         }
-        if (!/^\d+$/.test(newCon[6])) {
+        if (!/^\d+$/.test(newCon[7])) {
             alert("end length needs to be a number");
             return;
         }
-        connections.push(new Connection(newCon[0].trim().toLocaleLowerCase(), parseInt(newCon[1]), newCon[2], newCon[3], parseInt(newCon[4]), newCon[5].trim().toLocaleLowerCase(), parseInt(newCon[6])));
+        connections.push(new Connection(newCon[0], newCon[1].trim().toLocaleLowerCase(), parseInt(newCon[2]), newCon[3], newCon[4], parseInt(newCon[5]), newCon[6].trim().toLocaleLowerCase(), parseInt(newCon[7])));
         onChangeConnections();
     }
 
@@ -53,6 +53,7 @@
         <!-- Table header -->
         <thead class="text-xs font-semibold uppercase text-slate-500 bg-slate-50 border-t border-b border-slate-200">
         <tr>
+            <th></th>
             <th colspan="2">
                 <div class="font-semibold text-center">Start Leg</div>
             </th>
@@ -62,6 +63,8 @@
             <th colspan="2">
                 <div class="font-semibold text-center">End Leg</div>
             </th>
+            <th></th>
+            <th></th>
         </tr>
         <tr>
             {#each columns as col}
@@ -69,12 +72,19 @@
                     <div class="font-semibold text-center">{ col }</div>
                 </th>
             {/each}
+            <th class="font-semibold text-center">Dominated</th>
+            <th></th>
         </tr>
         </thead>
 
         <tbody class="text-sm divide-y divide-slate-200">
         {#each connections as c, index}
-            <tr style="background-color:{c.dominated};">
+            <tr>
+                <td contenteditable="true" bind:innerHTML={c.name}
+                    class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
+                    on:keyup={onChangeConnections}>
+                    { c.name }
+                </td>
                 <td contenteditable="true" bind:innerHTML={c.start_mode}
                     class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
                     on:keyup={onChangeConnections}>
@@ -109,6 +119,9 @@
                     <input type="number" bind:value={c.end_length} class="border-0 w-16"
                            on:change={onChangeConnections}>
                 </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    {c.dominated}
+                </td>
                 <td class="px-5 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                     <button class="btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-rose-500 mx-auto"
                             on:click={() => removeCon(index)}>
@@ -123,6 +136,7 @@
                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500" contenteditable="true"
                     bind:innerHTML={column}/>
             {/each}
+            <td></td>
             <td class="px-5 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                 <button class="btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500"
                         on:click={addCon}>
