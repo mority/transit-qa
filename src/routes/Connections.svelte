@@ -80,10 +80,10 @@
 				<th></th>
 				<th></th>
 				<th colspan="2">
-					<div class="font-semibold text-center">Erste Meile</div>
+					<div class="font-semibold text-center pt-2">Erste Meile</div>
 				</th>
 				<th colspan="2">
-					<div class="font-semibold text-center">Letzte Meile</div>
+					<div class="font-semibold text-center pt-2">Letzte Meile</div>
 				</th>
 				<th></th>
 				<th></th>
