@@ -146,7 +146,7 @@
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 						{#each dominatedBy(c, connections, params) as [x, d]}
-							[{x.name}, {Math.round(d)}]<br />
+							[{x.name}, {d === Number.POSITIVE_INFINITY ? 'Pareto' : Math.round(d)}]<br />
 						{/each}
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
