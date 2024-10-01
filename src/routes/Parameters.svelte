@@ -65,7 +65,7 @@
 				>
 					<label for="json-io">JSON Import/Export</label>
 					<br />
-					<textarea id="json-io" style="width: 100%; height: 200px;" bind:value={jsonIo}></textarea>
+					<textarea id="json-io" class="w-full h-[200px]" bind:value={jsonIo}></textarea>
 				</td>
 			</tr>
 		</tbody>
