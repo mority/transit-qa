@@ -12,13 +12,14 @@
 	let json_io = $state('');
 
 	$effect(() => {
-		json_io = '{"params":'+ JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
+		json_io =
+			'{"params":' + JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
 	});
 
 	$effect(() => {
 		const parsed = JSON.parse(json_io);
-		params = parsed["params"];
-		connections = parsed["connections"];
+		params = parsed['params'];
+		connections = parsed['connections'];
 	});
 </script>
 
@@ -59,7 +60,11 @@
 			</tr>
 			<tr>
 				<td colspan="2" class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
-					><label for="json-io">JSON Import/Export</label><br><textarea id="json-io" style="width: 100%; height: 200px;" bind:value={json_io}></textarea></td
+					><label for="json-io">JSON Import/Export</label><br /><textarea
+						id="json-io"
+						style="width: 100%; height: 200px;"
+						bind:value={json_io}
+					></textarea></td
 				>
 			</tr>
 		</tbody>
