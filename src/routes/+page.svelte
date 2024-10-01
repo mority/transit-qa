@@ -101,6 +101,6 @@
 </svelte:head>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-	<Parameters bind:params />
+	<Parameters bind:params bind:connections />
 	<Connections bind:connections {params} />
 </div>

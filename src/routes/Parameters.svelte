@@ -1,10 +1,26 @@
 <script lang="ts">
 	import type { Params } from './Params';
+	import type { Connection } from './Connection';
 	let {
-		params = $bindable()
+		params = $bindable(),
+		connections = $bindable()
 	}: {
 		params: Params;
+		connections: Array<Connection>;
 	} = $props();
+
+	let json_io = $state('');
+
+	$effect(() => {
+		json_io = '{"params":'+ JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
+	});
+
+	$effect(() => {
+		console.log(json_io);
+		let parsed = JSON.parse(json_io);
+		params = parsed["params"];
+		connections = parsed["connections"];
+	});
 </script>
 
 <div class="relative basis-1/8 bg-white shadow-lg rounded-sm border border-slate-200">
@@ -41,6 +57,11 @@
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" bind:value={params.factorTransfer} class="border-0 w-16" />
 				</td>
+			</tr>
+			<tr style="height=100px;">
+				<td colspan="2" class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
+					><label for="json-io">JSON Import/Export</label><br><textarea id="json-io" style="width: 100%; height: 200px;" bind:value={json_io}></textarea></td
+				>
 			</tr>
 		</tbody>
 	</table>
