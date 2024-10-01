@@ -16,8 +16,7 @@
 	});
 
 	$effect(() => {
-		console.log(json_io);
-		let parsed = JSON.parse(json_io);
+		const parsed = JSON.parse(json_io);
 		params = parsed["params"];
 		connections = parsed["connections"];
 	});
