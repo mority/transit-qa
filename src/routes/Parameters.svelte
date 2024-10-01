@@ -9,15 +9,15 @@
 		connections: Array<Connection>;
 	} = $props();
 
-	let json_io = $state('');
+	let jsonIo = $state('');
 
 	$effect(() => {
-		json_io =
+		jsonIo =
 			'{"params":' + JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
 	});
 
 	$effect(() => {
-		const parsed = JSON.parse(json_io);
+		const parsed = JSON.parse(jsonIo);
 		params = parsed['params'];
 		connections = parsed['connections'];
 	});
@@ -63,7 +63,7 @@
 					><label for="json-io">JSON Import/Export</label><br /><textarea
 						id="json-io"
 						style="width: 100%; height: 200px;"
-						bind:value={json_io}
+						bind:value={jsonIo}
 					></textarea></td
 				>
 			</tr>
