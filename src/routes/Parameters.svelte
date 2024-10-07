@@ -28,7 +28,7 @@
 		<tbody class="text-sm divide-y divide-slate-200">
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Gewicht Fahrzeit
+					Schutz durch Fahrzeitvorteil
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" bind:value={params.alpha} class="border-0 w-16" />
@@ -36,7 +36,7 @@
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Gewicht zeitlicher Abstand
+					Schutz durch zeitlichen Abstand
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" bind:value={params.beta} class="border-0 w-16" />
