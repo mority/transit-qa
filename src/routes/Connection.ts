@@ -115,8 +115,9 @@ function dominates(a: Connection, b: Connection, params: Params): number {
 
 	const costA = cost(a, params);
 	const costB = cost(b, params);
-	const alphaTerm = params.alpha * (travelTime(a) / travelTime(b)) * distance(a, b);
-	const sum = costA + alphaTerm;
+	const alphaTerm = params.alpha * (travelTime(a) / travelTime(b));
+	const betaTerm = params.beta * distance(a, b);
+	const sum = costA + alphaTerm + betaTerm;
 	const res = sum < costB;
 
 	console.log(
