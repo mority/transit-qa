@@ -166,11 +166,12 @@ function dominatesDirectTaxi(a: Connection, b: Connection, params: Params): numb
 	const factorImprScore = params.improvementFactorDirectTaxi * travelTimeB - sumA;
 	const res = Math.max(minImprScore, factorImprScore);
 	console.log(
-		'%s dominatesDirectTaxi %s? distance: %d, %d + %d = %d < %d => %o',
+		'%s dominatesDirectTaxi %s? distance: %d => %o',
 		a.name,
 		b.name,
 		distance(a, b),
-	)
+		res
+	);
 	return res;
 }
 

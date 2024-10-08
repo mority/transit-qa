@@ -52,6 +52,30 @@
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
+					Distanz Taxi Direkt
+				</td>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+					<input type="number" bind:value={params.distanceDirectTaxi} class="border-0 w-16" />
+				</td>
+			</tr>
+			<tr>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
+					Verbesserungsfaktor Taxi Direkt
+				</td>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+					<input type="number" bind:value={params.improvementFactorDirectTaxi} class="border-0 w-16" />
+				</td>
+			</tr>
+			<tr>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
+					Min. Verbesserung Taxi Direkt
+				</td>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+					<input type="number" bind:value={params.minImprovementDirectTaxi} class="border-0 w-16" />
+				</td>
+			</tr>
+			<tr>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
 					Faktor Umstieg
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
