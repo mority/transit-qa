@@ -9,7 +9,7 @@
 	} = $props();
 </script>
 
-<div class="relative basis-1/8 bg-white shadow-lg rounded-sm border border-slate-200">
+<div class="bg-white shadow-lg rounded-sm border border-slate-200">
 	<table class="table-auto w-full">
 		<tbody class="text-sm divide-y divide-slate-200">
 			<tr>
