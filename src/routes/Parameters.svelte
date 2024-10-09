@@ -6,7 +6,7 @@
 		connections = $bindable()
 	}: {
 		params: Params;
-		connections: Array<Connection>;
+		connections: Array<Array<Connection>>;
 	} = $props();
 
 	let jsonIo = $state('');
