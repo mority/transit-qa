@@ -1,26 +1,12 @@
 <script lang="ts">
 	import type { Params } from './Params';
-	import type { Connection } from './Connection';
 	let {
 		params = $bindable(),
-		connections = $bindable()
+		jsonIo = $bindable()
 	}: {
 		params: Params;
-		connections: Array<Array<Connection>>;
+		jsonIo: string;
 	} = $props();
-
-	let jsonIo = $state('');
-
-	$effect(() => {
-		jsonIo =
-			'{"params":' + JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
-	});
-
-	$effect(() => {
-		const parsed = JSON.parse(jsonIo);
-		params = parsed['params'];
-		connections = parsed['connections'];
-	});
 </script>
 
 <div class="relative basis-1/8 bg-white shadow-lg rounded-sm border border-slate-200">

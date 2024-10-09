@@ -11,7 +11,7 @@
 		factorTransfer: 5.0
 	});
 
-	let connectionSets = $state<Array<Array<Connection>>>([
+	let conSets = $state<Array<Array<Connection>>>([
 		[
 			{
 				name: 'ÖV Takt 1',
@@ -96,13 +96,37 @@
 		]
 	]);
 
+	let conSetNames = $state<Array<string>>(['Verbindungsmenge 1']);
+
 	function addConSet() {
-		connectionSets.push([]);
+		conSets.push([]);
+		conSetNames.push('Neue Verbindungsmenge');
 	}
 
 	function remConSet(i: number) {
-		connectionSets.splice(i, 1);
+		conSets.splice(i, 1);
+		conSetNames.splice(i, 1);
 	}
+
+	let jsonIo = $state('');
+
+	$effect(() => {
+		jsonIo =
+			'{"params":' +
+			JSON.stringify(params) +
+			',"conSets":' +
+			JSON.stringify(conSets) +
+			',"conSetNames":' +
+			JSON.stringify(conSetNames) +
+			'}';
+	});
+
+	$effect(() => {
+		const parsed = JSON.parse(jsonIo);
+		params = parsed['params'];
+		conSets = parsed['conSets'];
+		conSetNames = parsed['conSetNames'];
+	});
 </script>
 
 <svelte:head>
@@ -111,22 +135,27 @@
 </svelte:head>
 
 <div class="flex justify-center gap-8 py-8 w-full">
-	<Parameters bind:params bind:connections={connectionSets} />
+	<Parameters bind:params bind:jsonIo />
 	<div>
-	{#each connectionSets as cons, i}
-		<Connections bind:connections={connectionSets[i]} {params} />
+		{#each conSets as cons, i}
+			<div class="mb-2">
+				<div>
+					<p class="py-2 px-4 my-1 mx-1 float-left" bind:innerHTML={conSetNames[i]} contenteditable>
+						{conSetNames[i]}
+					</p>
+					<button
+						class="text-gray font-bold py-2 px-2 my-1 mx-1 rounded float-right"
+						onclick={() => remConSet(i)}
+					>&#x2715;</button>
+				</div>
+				<Connections bind:connections={conSets[i]} {params} />
+			</div>
+		{/each}
 		<button
-			class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full"
-			onclick={() => remConSet(i)}
+			class="bg-white btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500 w-full"
+			onclick={addConSet}
 		>
-			X
+			Neue Verbindungsmenge hinzufügen
 		</button>
-	{/each}
-	<button
-		class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-5"
-		onclick={addConSet}
-	>
-		Neue Verbindungsmenge hinzufügen
-	</button>
-</div>
+	</div>
 </div>
