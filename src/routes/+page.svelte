@@ -56,30 +56,38 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="flex py-2 justify-center w-full">
-	<aside class="h-screen fixed left-1 top-2 w-64">
-		<Parameters bind:params bind:jsonIo />
-	</aside>
-	<main class="pl-2 ml-64 mr-2 w-fit">
-		{#each conSets as cons, i}
-			<div class="mb-2">
-				<div>
-					<p class="py-2 px-4 my-1 mx-1 float-left" bind:innerHTML={conSetNames[i]} contenteditable>
-						{conSetNames[i]}
-					</p>
-					<button
-						class="text-gray font-bold py-2 px-2 my-1 mx-1 rounded float-right"
-						onclick={() => remConSet(i)}>&#x2715;</button
-					>
-				</div>
-				<Connections bind:connections={conSets[i]} {params} />
+<div class="container mx-auto">
+	<div class="flex flex-row flex-wrap">
+		<aside class="w-64 p-2">
+			<div class="sticky top-2 w-full">
+				<Parameters bind:params bind:jsonIo />
 			</div>
-		{/each}
-		<button
-			class="bg-white btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500 w-full"
-			onclick={addConSet}
-		>
-			Neue Verbindungsmenge hinzufügen
-		</button>
-	</main>
+		</aside>
+		<main role="main" class="p-2">
+			{#each conSets as cons, i}
+				<div class="mb-2">
+					<div>
+						<p
+							class="py-2 px-4 my-1 mx-1 float-left"
+							bind:innerHTML={conSetNames[i]}
+							contenteditable
+						>
+							{conSetNames[i]}
+						</p>
+						<button
+							class="text-gray font-bold py-2 px-2 my-1 mx-1 rounded float-right"
+							onclick={() => remConSet(i)}>&#x2715;</button
+						>
+					</div>
+					<Connections bind:connections={conSets[i]} {params} />
+				</div>
+			{/each}
+			<button
+				class="bg-white btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500 w-full mb-2"
+				onclick={addConSet}
+			>
+				Neue Verbindungsmenge hinzufügen
+			</button>
+		</main>
+	</div>
 </div>
