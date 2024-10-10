@@ -56,14 +56,14 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="container mx-auto">
-	<div class="flex flex-row flex-wrap">
-		<aside class="w-64 p-2">
-			<div class="sticky top-2 w-full">
+<div class="2xl:container 2xl:mx-auto">
+	<div class="flex flex-row">
+		<aside class="p-2">
+			<div class="sticky top-2">
 				<Parameters bind:params bind:jsonIo />
 			</div>
 		</aside>
-		<main role="main" class="p-2">
+		<main class="p-2">
 			{#each conSets as cons, i}
 				<div class="mb-2">
 					<div>
