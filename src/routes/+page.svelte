@@ -83,7 +83,7 @@
 				</div>
 			{/each}
 			<button
-				class="bg-white btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500 w-full mb-2"
+				class="bg-white hover:bg-slate-50 btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500 w-full mb-2"
 				onclick={addConSet}
 			>
 				Neue Verbindungsmenge hinzufügen

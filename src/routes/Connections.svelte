@@ -2,7 +2,7 @@
 	import {
 		closestToDomination,
 		type Connection,
-		dominatedBy,
+		dominatedByArr,
 		isValidModeStr,
 		parseTime
 	} from './Connection';
@@ -16,7 +16,17 @@
 		params: Params;
 	} = $props();
 
-	let columns = ['Name', 'Abfahrt', 'Ankunft', 'Umstiege', 'Modus', 'Dauer', 'Modus', 'Dauer'];
+	let columns = [
+		'Name',
+		'Abfahrt',
+		'Ankunft',
+		'Umstiege',
+		'Modus',
+		'Dauer',
+		'Modus',
+		'Dauer',
+		'zu dom.'
+	];
 	let newCon = $state(Array(columns.length).fill(''));
 
 	function addCon() {
@@ -59,7 +69,8 @@
 			startMode: newCon[4],
 			startLength: parseInt(newCon[5]),
 			endMode: newCon[6],
-			endLength: parseInt(newCon[7])
+			endLength: parseInt(newCon[7]),
+			toDom: false
 		});
 	}
 
@@ -88,6 +99,7 @@
 				<th></th>
 				<th></th>
 				<th></th>
+				<th></th>
 			</tr>
 			<tr>
 				{#each columns as col}
@@ -103,8 +115,9 @@
 
 		<tbody class="text-sm divide-y divide-slate-200">
 			{#each connections as c, index}
+				{@const domBy = dominatedByArr(connections, params)}
 				{@const closest = closestToDomination(c, connections, params)}
-				<tr>
+				<tr class:bg-red-300={c.toDom != (domBy[index].length != 0)}>
 					<td
 						contenteditable="true"
 						bind:innerHTML={c.name}
@@ -119,7 +132,7 @@
 						<input type="time" bind:value={c.arrival} />
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						<input type="number" bind:value={c.transfers} class="border-0 w-16" />
+						<input type="number" bind:value={c.transfers} class="w-16" />
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
 						<select
@@ -133,7 +146,7 @@
 						</select>
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						<input type="number" bind:value={c.startLength} class="border-0 w-16" />
+						<input type="number" bind:value={c.startLength} class="w-16" />
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
 						<select class="appearance-none" bind:value={c.endMode} name="endMode" id="endMode">
@@ -142,10 +155,13 @@
 						</select>
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						<input type="number" bind:value={c.endLength} class="border-0 w-16" />
+						<input type="number" bind:value={c.endLength} class="w-16" />
+					</td>
+					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-center">
+						<input type="checkbox" bind:checked={c.toDom} />
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						{#each dominatedBy(c, connections, params) as [x, d]}
+						{#each domBy[index] as [x, d]}
 							[{x.name}, {d === Number.POSITIVE_INFINITY ? 'Pareto' : Math.round(d)}]<br />
 						{/each}
 					</td>
@@ -156,7 +172,7 @@
 					</td>
 					<td class="px-5 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 						<button
-							class="btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-rose-500 mx-auto"
+							class="bg-white hover:bg-slate-50 btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-rose-500 mx-auto"
 							onclick={() => removeCon(index)}
 						>
 							Entfernen
@@ -198,11 +214,14 @@
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" bind:value={newCon[7]} placeholder="--" class="border-0 w-16" />
 				</td>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap text-center">
+					<input type="checkbox" bind:checked={newCon[8]} />
+				</td>
 				<td></td>
 				<td></td>
 				<td class="px-5 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<button
-						class="btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500"
+						class="hover:bg-slate-50 btn-sm border-slate-200 hover:border-slate-300 shadow-sm text-green-500"
 						onclick={addCon}
 					>
 						Hinzufügen

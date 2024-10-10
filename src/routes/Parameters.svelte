@@ -54,6 +54,11 @@
 					<textarea id="json-io" class="w-full h-[200px]" bind:value={jsonIo}></textarea>
 				</td>
 			</tr>
+			<tr>
+				<td colspan="2" class="text-center"
+					><span class="bg-red-300 w-8 h-8 m-1 float-left"></span>Anforderung nicht erfüllt</td
+				>
+			</tr>
 		</tbody>
 	</table>
 </div>
