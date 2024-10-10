@@ -56,7 +56,7 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="2xl:container 2xl:mx-auto">
+<div class="[@media(width>=1800px)]:container [@media(width>=1800px)]:mx-auto">
 	<div class="flex flex-row">
 		<aside class="p-2">
 			<div class="sticky top-2">
