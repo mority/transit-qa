@@ -70,7 +70,7 @@
 			startLength: parseInt(newCon[5]),
 			endMode: newCon[6],
 			endLength: parseInt(newCon[7]),
-			toDom: false
+			toDom: newCon[8]
 		});
 	}
 
