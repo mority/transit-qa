@@ -121,7 +121,7 @@
 					<td
 						contenteditable="true"
 						bind:innerHTML={c.name}
-						class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500"
+						class="px-2 first:pl-5 last:pr-5 py-3 whitespace-pre decoration-pink-500"
 					>
 						{c.name}
 					</td>
