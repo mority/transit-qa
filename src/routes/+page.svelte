@@ -61,7 +61,7 @@
 				<div class="mb-2">
 					<div>
 						<p
-							class="py-2 px-4 my-1 mx-1 float-left"
+							class="py-2 px-4 my-1 mx-1 float-left whitespace-pre"
 							bind:innerHTML={conSetNames[i]}
 							contenteditable
 						>
