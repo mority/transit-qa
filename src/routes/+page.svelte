@@ -34,7 +34,6 @@
 
 	$effect(() => {
 		const parsed = JSON.parse(jsonIo);
-		console.log(parsed);
 		params = parsed['params'];
 		conSets = parsed['conSets'];
 		conSetNames = parsed['conSetNames'];
