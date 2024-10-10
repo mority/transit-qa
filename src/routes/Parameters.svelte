@@ -1,29 +1,15 @@
 <script lang="ts">
 	import type { Params } from './Params';
-	import type { Connection } from './Connection';
 	let {
 		params = $bindable(),
-		connections = $bindable()
+		jsonIo = $bindable()
 	}: {
 		params: Params;
-		connections: Array<Connection>;
+		jsonIo: string;
 	} = $props();
-
-	let jsonIo = $state('');
-
-	$effect(() => {
-		jsonIo =
-			'{"params":' + JSON.stringify(params) + ',"connections":' + JSON.stringify(connections) + '}';
-	});
-
-	$effect(() => {
-		const parsed = JSON.parse(jsonIo);
-		params = parsed['params'];
-		connections = parsed['connections'];
-	});
 </script>
 
-<div class="relative basis-1/8 bg-white shadow-lg rounded-sm border border-slate-200">
+<div class="bg-white shadow-lg rounded-sm border border-slate-200">
 	<table class="table-auto w-full">
 		<tbody class="text-sm divide-y divide-slate-200">
 			<tr>
@@ -67,6 +53,11 @@
 					<br />
 					<textarea id="json-io" class="w-full h-[200px]" bind:value={jsonIo}></textarea>
 				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="text-center"
+					><span class="bg-red-300 w-8 h-8 m-1 float-left"></span>Anforderung nicht erfüllt</td
+				>
 			</tr>
 		</tbody>
 	</table>

@@ -14,6 +14,7 @@ export type Connection = {
 	startLength: number;
 	endMode: string;
 	endLength: number;
+	toDom: boolean;
 };
 
 export function formatTime(i: number) {
@@ -153,6 +154,17 @@ export function dominatedBy(
 	return conns
 		.map((c): [Connection, number] => [c, dominates(c, x, params)])
 		.filter(([_, d]) => d > 0);
+}
+
+export function dominatedByArr(
+	conns: Array<Connection>,
+	params: Params
+): Array<Array<[Connection, number]>> {
+	let domBy = new Array<Array<[Connection, number]>>();
+	conns.forEach((con) => {
+		domBy.push(dominatedBy(con, conns, params));
+	});
+	return domBy;
 }
 
 export function closestToDomination(
