@@ -5,4 +5,7 @@ export type Params = {
   costWalk: Array<CostThreshold>;
   costTaxi: Array<CostThreshold>;
   costTransfer: Array<CostThreshold>;
+  distanceDirectTaxi: number;
+  improvementFactorDirectTaxi: number;
+  minImprovementDirectTaxi: number;
 }
