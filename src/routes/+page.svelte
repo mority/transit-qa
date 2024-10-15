@@ -60,13 +60,12 @@
 			{#each conSets as cons, i}
 				<div class="mb-2">
 					<div>
-						<p
-							class="py-2 px-4 my-1 mx-1 float-left"
+						<div class="py-2 px-4 my-1 mx-1 float-left whitespace-pre">
+							<span class="p-2"
 							bind:innerHTML={conSetNames[i]}
 							contenteditable
-						>
-							{conSetNames[i]}
-						</p>
+						>{conSetNames[i]}</span>
+						</div>
 						<button
 							class="text-gray font-bold py-2 px-2 my-1 mx-1 rounded float-right"
 							onclick={() => remConSet(i)}>&#x2715;</button

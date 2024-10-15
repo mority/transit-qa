@@ -118,12 +118,10 @@
 				{@const domBy = dominatedByArr(connections, params)}
 				{@const closest = closestToDomination(c, connections, params)}
 				<tr class:bg-red-300={c.toDom != (domBy[index].length != 0)}>
-					<td
-						contenteditable="true"
-						bind:innerHTML={c.name}
+					<td						
 						class="px-2 first:pl-5 last:pr-5 py-3 whitespace-pre decoration-pink-500"
 					>
-						{c.name}
+						<span class="p-2" bind:innerHTML={c.name} contenteditable>{c.name}</span>
 					</td>
 					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
 						<input type="time" bind:value={c.departure} />
