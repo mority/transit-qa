@@ -99,7 +99,7 @@
 			<tr>
 				<th colspan="3">Umstiege</th>
 			</tr>
-			<tr>
+			<tr class="border-none">
 				<th>Ab</th><th>Wert</th>
 			</tr>
 			{#each params.costTransfer as ct, i}
@@ -137,7 +137,7 @@
 			</tr>
 			<tr>
 				<td colspan="2" class="text-center"
-					><span class="bg-red-300 w-8 h-8 m-1 float-left"></span>Anforderung nicht erfüllt</td
+					><span class="bg-red-300 w-8 h-8 m-1 float-left"></span><p>Anforderung nicht erfüllt</p></td
 				>
 			</tr>
 		</tbody>
