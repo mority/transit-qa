@@ -1,4 +1,5 @@
 import { type Params } from './Params';
+import { tally } from './CostThreshold';
 
 export enum Mode {
 	Walk,
@@ -58,18 +59,18 @@ function usesTaxi(c: Connection) {
 function startCost(c: Connection, params: Params) {
 	switch (startMode(c)) {
 		case Mode.Walk:
-			return c.startLength;
+			return tally(c.startLength, params.costWalk);
 		case Mode.Taxi:
-			return params.baseTaxi + params.factorTaxi * c.startLength;
+			return tally(c.startLength, params.costTaxi);
 	}
 }
 
 function endCost(c: Connection, params: Params) {
 	switch (endMode(c)) {
 		case Mode.Walk:
-			return c.endLength;
+			return tally(c.endLength, params.costWalk);
 		case Mode.Taxi:
-			return params.baseTaxi + params.factorTaxi * c.endLength;
+			return tally(c.endLength, params.costTaxi);
 	}
 }
 
@@ -79,7 +80,7 @@ function travelTime(c: Connection) {
 
 function cost(c: Connection, params: Params) {
 	return (
-		startCost(c, params) + endCost(c, params) + travelTime(c) + params.factorTransfer * c.transfers
+		startCost(c, params) + endCost(c, params) + travelTime(c) + tally(c.transfers, params.costTransfer)
 	);
 }
 
