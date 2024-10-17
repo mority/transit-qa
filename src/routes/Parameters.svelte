@@ -23,17 +23,29 @@
 <div class="bg-white shadow-lg rounded-sm border border-slate-200 text-right mb-2">
 	<table class="table-auto w-full">
 		<tbody class="text-sm divide-y divide-slate-200 border-slate-200">
+			<tr class="text-center">
+				<th colspan="3">Taxi</th>
+			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Schutzfaktor
+					Gewicht des zeitlichen Abstands
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" step="0.1" bind:value={params.alpha} class="border-0 w-20" />
 				</td>
 			</tr>
+		</tbody>
+	</table>
+	</div>
+	<div class="bg-white shadow-lg rounded-sm border border-slate-200 text-right mb-2">
+		<table class="table-auto w-full">
+			<tbody class="text-sm divide-y divide-slate-200 border-slate-200">
+				<tr class="text-center">
+					<th colspan="3">Direkt-Taxi</th>
+				</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Distanz Taxi Direkt
+					Gewicht des zeitlichen Abstands
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" step="0.1" bind:value={params.distanceDirectTaxi} class="border-0 w-20" />
@@ -41,7 +53,7 @@
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Verbesserungsfaktor Taxi Direkt
+					Verbesserungsfaktor
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input
@@ -54,7 +66,7 @@
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Min. Verbesserung Taxi Direkt
+					Minimale Verbesserung
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
 					<input type="number" bind:value={params.minImprovementDirectTaxi} class="border-0 w-20" />
