@@ -1,6 +1,9 @@
 import { type Params } from './Params';
 import { tally } from './CostThreshold';
 
+// remove for debug logging, causes jank
+console.log = function() {}
+
 export enum Mode {
 	Walk,
 	Taxi
