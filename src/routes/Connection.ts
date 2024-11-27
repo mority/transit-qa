@@ -145,7 +145,7 @@ function paretoDominates(a: Connection, b: Connection) {
 function costDominates(a: Connection, b: Connection, params: Params): number {
 	const costA = cost(a, params);
 	const costB = cost(b, params);
-	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * distance(a, b) * distance(a, b);
+	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * Math.pow(distance(a, b),2);
 	const sum = costA + alphaTerm;
 	const res = sum < costB;
 
