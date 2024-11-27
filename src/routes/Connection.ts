@@ -2,7 +2,7 @@ import { type Params } from './Params';
 import { tally } from './CostThreshold';
 
 // remove for debug logging, causes jank
-console.log = function() {}
+console.log = function () { }
 
 export enum Mode {
 	Walk,
@@ -87,12 +87,8 @@ function PTTime(c: Connection) {
 
 function cost(c: Connection, params: Params) {
 	return (
-		(startCost(c, params) +
-			endCost(c, params) +
-			PTTime(c) +
-			tally(c.transfers, params.costTransfer)) *
-			(directTaxi(c) ? params.factorDirectTaxi : 1) +
-		(directTaxi(c) ? params.constantDirectTaxi : 0)
+		(travelTime(c) +
+			tally(c.transfers, params.costTransfer))
 	);
 }
 
@@ -125,7 +121,7 @@ function dominates(a: Connection, b: Connection, params: Params): number {
 		return paretoDominates(a, b) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
 	}
 
-	if (usesTaxi(b)) {
+	if (!usesTaxi(a) && usesTaxi(b)) {
 		return costDominates(a, b, params);
 	}
 
@@ -145,26 +141,30 @@ function paretoDominates(a: Connection, b: Connection) {
 function costDominates(a: Connection, b: Connection, params: Params): number {
 	const costA = cost(a, params);
 	const costB = cost(b, params);
-	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * Math.pow(distance(a, b),2);
-	const sum = costA + alphaTerm;
-	const res = sum < costB;
+	const alphaTerm = params.weightTimeDistance * distance(a, b);
+	const improvement = costA + alphaTerm - costB;
+	const taxiMinutesB = ((startMode(b) === Mode.Taxi ? b.startLength : 0) + (endMode(b) === Mode.Taxi ? b.endLength : 0)) * (directTaxi(b) ? params.factorDirectTaxi : 1)
+	const ppu = improvement / taxiMinutesB;
+	const res = params.minPPU > ppu;
 
 	console.log(
-		'%s dominatesPtTaxi %s? distance: %d, %d + %d = %d < %d => %o',
+		'%s costDominates %s? distance: %d, (%d + %d - %d) / %d = %d => %o, minPPU: %d',
 		a.name,
 		b.name,
 		distance(a, b),
 		costA,
 		alphaTerm,
-		sum,
 		costB,
-		res
+		improvement,
+		taxiMinutesB,
+		ppu,		
+		res,
+		params.minPPU
 	);
 	// domination <=>
-	//           sum  <  costB
-	//             0  <  costB - sum
-	//   costB - sum  >  0
-	return costB - sum;
+	//           ppu  <  minPPU
+	// 				0 <  minPPU - ppu
+	return params.minPPU - ppu;
 }
 
 function distance(a: Connection, b: Connection) {
