@@ -85,6 +85,10 @@ function PTTime(c: Connection) {
 	return travelTime(c) - c.startLength - c.endLength;
 }
 
+function taxiTime(c: Connection) {
+	return (parseMode(c.startMode) === Mode.Taxi ? c.startLength : 0) + (parseMode(c.endMode) === Mode.Taxi ? c.endLength : 0);
+}
+
 function cost(c: Connection, params: Params) {
 	return (
 		(startCost(c, params) +
@@ -125,8 +129,12 @@ function dominates(a: Connection, b: Connection, params: Params): number {
 		return paretoDominates(a, b) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
 	}
 
-	if (usesTaxi(b)) {
+	if (!usesTaxi(a) && usesTaxi(b)) {
 		return costDominates(a, b, params);
+	}
+
+	if(usesTaxi(a) && usesTaxi(b)) {
+		return taxiDominates(a,b,params);
 	}
 
 	return Number.NEGATIVE_INFINITY;
@@ -165,6 +173,12 @@ function costDominates(a: Connection, b: Connection, params: Params): number {
 	//             0  <  costB - sum
 	//   costB - sum  >  0
 	return costB - sum;
+}
+
+function taxiDominates(a: Connection, b: Connection, params: Params): number {
+	return distance(a,b) < 60 ? ((travelTime(b) +
+	tally(b.transfers, params.costTransfer)) / taxiTime(a)) - ((travelTime(a) +
+	tally(a.transfers, params.costTransfer)) / taxiTime(b)) : 0;
 }
 
 function distance(a: Connection, b: Connection) {
