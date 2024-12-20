@@ -153,7 +153,7 @@ function paretoDominates(a: Connection, b: Connection) {
 function costDominates(a: Connection, b: Connection, params: Params): number {
 	const costA = cost(a, params);
 	const costB = cost(b, params);
-	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * Math.pow(distance(a, b),2);
+	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * Math.pow(distance(a, b),params.exponentTimeDistance);
 	const sum = costA + alphaTerm;
 	const res = sum < costB;
 
@@ -175,10 +175,13 @@ function costDominates(a: Connection, b: Connection, params: Params): number {
 	return costB - sum;
 }
 
+function taxiDominationCost(c: Connection, params: Params): number {
+	return travelTime(c) + tally(c.transfers, params.costTransfer);
+}
+
 function taxiDominates(a: Connection, b: Connection, params: Params): number {
-	return distance(a,b) < 60 ? ((travelTime(b) +
-	tally(b.transfers, params.costTransfer)) / taxiTime(a)) - ((travelTime(a) +
-	tally(a.transfers, params.costTransfer)) / taxiTime(b)) : 0;
+	return taxiDominationCost(b, params) / taxiTime(a) 
+	- (taxiDominationCost(a, params) + params.weightTimeDistance * Math.pow(distance(a,b),params.exponentTimeDistance)) / taxiTime(b);
 }
 
 function distance(a: Connection, b: Connection) {

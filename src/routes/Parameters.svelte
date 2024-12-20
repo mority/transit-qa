@@ -42,6 +42,14 @@
 					<input type="number" step="0.1" bind:value={params.weightTimeDistance} class="border-0 w-20" />
 				</td>
 			</tr>
+			<tr>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
+					Exponent:<br>Zeitlicher Abstand
+				</td>
+				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+					<input type="number" step="0.1" bind:value={params.exponentTimeDistance} class="border-0 w-20" />
+				</td>
+			</tr>
 		</tbody>
 	</table>
 	</div>
