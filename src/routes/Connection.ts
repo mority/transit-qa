@@ -2,7 +2,7 @@ import { type Params } from './Params';
 import { tally } from './CostThreshold';
 
 // remove for debug logging, causes jank
-console.log = function() {}
+console.log = function () {};
 
 export enum Mode {
 	Walk,
@@ -86,17 +86,9 @@ function PTTime(c: Connection) {
 }
 
 function taxiTime(c: Connection) {
-	return (parseMode(c.startMode) === Mode.Taxi ? c.startLength : 0) + (parseMode(c.endMode) === Mode.Taxi ? c.endLength : 0);
-}
-
-function cost(c: Connection, params: Params) {
 	return (
-		(startCost(c, params) +
-			endCost(c, params) +
-			PTTime(c) +
-			tally(c.transfers, params.costTransfer)) *
-			(directTaxi(c) ? params.factorDirectTaxi : 1) +
-		(directTaxi(c) ? params.constantDirectTaxi : 0)
+		(parseMode(c.startMode) === Mode.Taxi ? c.startLength : 0) +
+		(parseMode(c.endMode) === Mode.Taxi ? c.endLength : 0)
 	);
 }
 
@@ -118,6 +110,12 @@ function directTaxi(c: Connection) {
 	);
 }
 
+function cost(c: Connection, params: Params) {
+	return (
+		startCost(c, params) + endCost(c, params) + PTTime(c) + tally(c.transfers, params.costTransfer)
+	);
+}
+
 // positive = dominates
 // negative = does not dominate
 function dominates(a: Connection, b: Connection, params: Params): number {
@@ -133,8 +131,8 @@ function dominates(a: Connection, b: Connection, params: Params): number {
 		return costDominates(a, b, params);
 	}
 
-	if(usesTaxi(a) && usesTaxi(b)) {
-		return taxiDominates(a,b,params);
+	if (usesTaxi(a) && usesTaxi(b)) {
+		return productivityDominates(a, b, params);
 	}
 
 	return Number.NEGATIVE_INFINITY;
@@ -153,7 +151,7 @@ function paretoDominates(a: Connection, b: Connection) {
 function costDominates(a: Connection, b: Connection, params: Params): number {
 	const costA = cost(a, params);
 	const costB = cost(b, params);
-	const alphaTerm = params.weightTravelTime * (travelTime(a) / travelTime(b)) + params.weightTimeDistance * Math.pow(distance(a, b),params.exponentTimeDistance);
+	const alphaTerm = params.alpha * (travelTime(a) / travelTime(b)) * distance(a, b);
 	const sum = costA + alphaTerm;
 	const res = sum < costB;
 
@@ -175,13 +173,15 @@ function costDominates(a: Connection, b: Connection, params: Params): number {
 	return costB - sum;
 }
 
-function taxiDominationCost(c: Connection, params: Params): number {
+function productivityCost(c: Connection, params: Params): number {
 	return travelTime(c) + tally(c.transfers, params.costTransfer);
 }
 
-function taxiDominates(a: Connection, b: Connection, params: Params): number {
-	return taxiDominationCost(b, params) / taxiTime(a) 
-	- (taxiDominationCost(a, params) + params.weightTimeDistance * Math.pow(distance(a,b),params.exponentTimeDistance)) / taxiTime(b);
+function productivityDominates(a: Connection, b: Connection, params: Params): number {
+	return (
+		productivityCost(b, params) / taxiTime(a) -
+		(productivityCost(a, params) + params.beta * distance(a, b)) / taxiTime(b)
+	);
 }
 
 function distance(a: Connection, b: Connection) {

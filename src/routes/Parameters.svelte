@@ -24,65 +24,30 @@
 	<table class="table-auto w-full">
 		<tbody class="text-sm divide-y divide-slate-200 border-slate-200">
 			<tr class="text-center">
-				<th colspan="3">Taxi</th>
+				<th colspan="3">ÖV &rarr; Taxi</th>
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Gewicht:<br>Reisezeit
+					Gewicht:<br>Reisezeit & Zeitlicher Abstand
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-					<input type="number" step="0.1" bind:value={params.weightTravelTime} class="border-0 w-20" />
+					<input type="number" step="0.1" bind:value={params.alpha} class="border-0 w-20" />
 				</td>
+			</tr>
+			<tr class="text-center">
+				<th colspan="3">Taxi &rarr; Taxi</th>
 			</tr>
 			<tr>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
 					Gewicht:<br>Zeitlicher Abstand
 				</td>
 				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-					<input type="number" step="0.1" bind:value={params.weightTimeDistance} class="border-0 w-20" />
-				</td>
-			</tr>
-			<tr>
-				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-					Exponent:<br>Zeitlicher Abstand
-				</td>
-				<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-					<input type="number" step="0.1" bind:value={params.exponentTimeDistance} class="border-0 w-20" />
+					<input type="number" step="1" bind:value={params.beta} class="border-0 w-20" />
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	</div>
-	<div class="bg-white shadow-lg rounded-sm border border-slate-200 text-right mb-2">
-		<table class="table-auto w-full">
-			<tbody class="text-sm divide-y divide-slate-200 border-slate-200">
-				<tr class="text-center">
-					<th colspan="3">Direkt-Taxi</th>
-				</tr>
-				<tr>
-					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-						Minimale Verbesserung
-					</td>
-					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						<input type="number" bind:value={params.constantDirectTaxi} class="border-0 w-20" />
-					</td>
-				</tr>
-				<tr>
-					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap decoration-pink-500">
-						Verbesserungsfaktor
-					</td>
-					<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-						<input
-							type="number"
-							step="0.1"
-							bind:value={params.factorDirectTaxi}
-							class="border-0 w-20"
-						/>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+</div>
 
 	<div class="bg-white shadow-lg rounded-sm border border-slate-200 text-center mb-2">
 	<table class="table-auto w-full">
