@@ -178,10 +178,13 @@ function productivityCost(c: Connection, params: Params): number {
 }
 
 function productivityDominates(a: Connection, b: Connection, params: Params): number {
-	return (
-		productivityCost(b, params) / taxiTime(a) -
-		(productivityCost(a, params) + params.beta * distance(a, b)) / taxiTime(b)
-	);
+	const prodA = productivityCost(b, params) / taxiTime(a);
+	const prodB = (productivityCost(a, params) + params.beta * distance(a, b)) / taxiTime(b);
+	
+	// domination <=>
+	//   		prodA > prodB
+	// prodA - prodB  >  0
+	return prodA - prodB;
 }
 
 function distance(a: Connection, b: Connection) {
